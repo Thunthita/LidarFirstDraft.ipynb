@@ -1,67 +1,34 @@
 All of the code is following the gluing method of Photon counting and analog signal from Prototype Lidar developed in NARIT
                          ANALOG CHANNEL
-┌──────────────────────┐
-│    Analog Signal     │
-└─────────┬────────────┘
-          │
-          ▼
-┌──────────────────────┐
-│ Background Correction│
-└─────────┬────────────┘
-          │
-          ▼
-┌──────────────────────┐
-│  k-scale & b-offset  │  ← calibration from overlap region
-└─────────┬────────────┘
-          │
-          ▼
-┌──────────────────────┐
-│ Analog Scaled for    │
-│ Gluing               │
-└─────────┬────────────┘
-          │
-          │
-          │                PHOTON COUNTING CHANNEL
-          │        ┌───────────────────────────────┐
-          │        │      Photon Counting Raw       │
-          │        └───────────┬───────────────────┘
-          │                    │
-          │                    ▼
-          │        ┌───────────────────────────────┐
-          │        │ Photon per bin conversion     │
-          │        └───────────┬───────────────────┘
-          │                    │
-          │                    ▼
-          │        ┌───────────────────────────────┐
-          │        │ Background Correction         │
-          │        └───────────┬───────────────────┘
-          │                    │
-          │                    ▼
-          │        ┌───────────────────────────────┐
-          │        │ Afterpulse Correction         │
-          │        └───────────┬───────────────────┘
-          │                    │
-          │                    ▼
-          │        ┌───────────────────────────────┐
-          │        │ Deadtime Counts               │
-          │        └───────────┬───────────────────┘
-          │                    │
-          │                    ▼
-          │        ┌───────────────────────────────┐
-          │        │ Deadtime Correction            │
-          │        └───────────┬───────────────────┘
-          │                    │
-          │                    ▼
-          │        ┌───────────────────────────────┐
-          │        │ Photon Counts (Corrected)     │
-          │        └───────────┬───────────────────┘
-          │                    │
-          └──────────────┬─────┘
-                         ▼
-                ┌──────────────────────┐
-                │ Merge Counts per bin │  ← glue region logic
-                └─────────┬────────────┘
-                          ▼
-                ┌──────────────────────┐
-                │   Range² Correction  │
-                └──────────────────────┘
+                         
+Photon Counting Processing
+
+raw photon counting
+→ photon per bin conversion
+→ background correction
+→ afterpulse correction
+→ deadtime counts
+→ deadtime correction
+→ corrected photon signal
+
+
+Analog signal processing
+
+raw analog signal
+→ background correction
+→ linear scaling (k, b)                  ; Photon_corrected ≈ k × Analog_corrected + b
+→ analog signal scaled for gluing        ; Analog_scaled = k × Analog + b, where: k = gain scaling factor  b = offset correction
+
+
+Channel Gluing (Merge Logic)
+
+corrected photon signal  (near range)
++ scaled analog signal   (far range)
+→ merged counts per bin
+
+
+Range² Correction
+
+merged counts per bin
+→ multiply by range²
+→ final lidar backscatter profile
