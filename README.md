@@ -1,5 +1,4 @@
 All of the code is following the gluing method of Photon counting and analog signal from Prototype Lidar developed in NARIT
-                         ANALOG CHANNEL
                          
 Photon Counting Processing
 
